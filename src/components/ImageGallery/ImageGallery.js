@@ -22,12 +22,13 @@ class ImageGallery extends Component {
     tags: '',
     totalPage: '',
     spiner: false,
+    page: 1,
   };
 
   async componentDidUpdate(prevProps, prevState) {
     const { imageName } = this.props;
-    if (prevProps.imageName !== imageName) {
-      try {
+    try {
+      if (prevProps.imageName !== imageName) {
         this.setState({ spiner: true });
         api.query = imageName;
         api.resetPage();
@@ -36,33 +37,34 @@ class ImageGallery extends Component {
         this.setState({
           images: hits,
           totalPage: totalHits,
-        });
-        this.setState({ spiner: false });
-      } catch (error) {
-        this.setState({ spiner: false });
-        toast.warning(`Couldnt find pictures with this name ${imageName}`, {
-          theme: 'colored',
+          spiner: false,
         });
       }
+      if (prevState.page !== this.state.page) {
+        const loadMore = await api.fetchGallery();
+        const { hits } = loadMore;
+        this.setState(prevState => ({
+          images: [...prevState.images, ...hits],
+          spiner: false,
+        }));
+      }
+    } catch (error) {
+      this.setState({ spiner: false });
+      toast.warning(`Couldnt find pictures with this name ${imageName}`, {
+        theme: 'colored',
+      });
     }
   }
 
-  onLoadMore = async () => {
+  onLoadMore = () => {
     this.setState({ spiner: true });
-    try {
-      const fetcApi = await api.fetchGallery();
-      const { hits } = fetcApi;
-      this.setState(prevState => ({
-        images: [...prevState.images, ...hits],
-      }));
-      this.setState({ spiner: false });
-      if (api.page > this.state.totalPage / api.per_page) {
-        toast.info(`No more pictures for your request 😢`, {
-          theme: 'colored',
-        });
-      }
-    } catch (error) {
-      console.log(error);
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
+    if (api.page === Math.floor(this.state.totalPage / api.per_page)) {
+      toast.info(`No more pictures for your request 😢`, {
+        theme: 'colored',
+      });
     }
   };
 
