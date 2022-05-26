@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export default function ImageGalleryItem({ hits, onClickImg }) {
   return hits.map(({ id, webformatURL, tags, largeImageURL }) => {
     return (
@@ -14,3 +16,8 @@ export default function ImageGalleryItem({ hits, onClickImg }) {
     );
   });
 }
+
+ImageGalleryItem.propTypes = {
+  hits: PropTypes.array.isRequired,
+  onClickImg: PropTypes.func.isRequired,
+};
