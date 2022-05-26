@@ -4,7 +4,13 @@ import { Component } from 'react';
 
 import { toast } from 'react-toastify';
 
+import PropTypes from 'prop-types';
+
 class SearchBar extends Component {
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+  };
+
   state = {
     nameImage: '',
   };
