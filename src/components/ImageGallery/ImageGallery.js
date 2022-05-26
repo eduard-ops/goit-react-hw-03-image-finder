@@ -1,5 +1,7 @@
 import { Component } from 'react';
 
+import PropTypes from 'prop-types';
+
 import ImageGalleryItem from '../ImageGalleryItem';
 
 import GalleryApiService from '../../services/galleryApi';
@@ -15,6 +17,9 @@ import Modal from '../Modal';
 const api = new GalleryApiService();
 
 class ImageGallery extends Component {
+  static propTypes = {
+    imageName: PropTypes.string.isRequired,
+  };
   state = {
     images: [],
     showModal: false,
