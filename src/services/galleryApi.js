@@ -1,9 +1,8 @@
 const axios = require('axios');
-const BAZE_URL = 'https://pixabay.com/api/';
+const BAZE_URL = 'https://pixabay.com';
 const API_KEY = '25658613-98e642d2c9015137af6c2464f';
 
-// axios.defaults.baseUrl = BAZE_URL;
-// axios.defaults.headers.common['Authorization'] = API_KEY;
+axios.defaults.baseURL = BAZE_URL;
 
 export default class GalleryApiService {
   constructor() {
@@ -12,7 +11,7 @@ export default class GalleryApiService {
     this.per_page = 12;
   }
   async fetchGallery() {
-    const url = await axios.get(BAZE_URL, {
+    const url = await axios.get('/api/', {
       params: {
         key: API_KEY,
         q: this.searchQuery,
@@ -23,6 +22,7 @@ export default class GalleryApiService {
         page: this.page,
       },
     });
+    console.log(url);
     const { data } = url;
     if (!data.hits.length) {
       throw new Error(data.hits.status);
